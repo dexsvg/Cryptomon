@@ -1,78 +1,64 @@
-//SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0 <0.9.0;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
 
-// Useful for debugging. Remove when deploying to a live network.
-import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-// Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
-// import "@openzeppelin/contracts/access/Ownable.sol";
+contract YourContract is ERC1155, Ownable {
+    using Strings for uint256;
 
-/**
- * A smart contract that allows changing a state variable of the contract and tracking the changes
- * It also allows the owner to withdraw the Ether in the contract
- * @author BuidlGuidl
- */
-contract YourContract {
-    // State Variables
-    address public immutable owner;
-    string public greeting = "Building Unstoppable Apps!!!";
-    bool public premium = false;
-    uint256 public totalCounter = 0;
-    mapping(address => uint) public userGreetingCounter;
+    string public name = "Cryptomon TCG Series 1";
+    string public symbol = "CMON1";
+    
+    // Harga 1 Booster Pack (Contoh: 0.0005 ETH atau sekitar Rp20.000)
+    uint256 public packPrice = 0.0005 ether; 
+    
+    // Alamat dompet kamu untuk menerima keuntungan langsung
+    address payable public developerWallet;
 
-    // Events: a way to emit log statements from smart contract that can be listened to by external parties
-    event GreetingChange(address indexed greetingSetter, string newGreeting, bool premium, uint256 value);
-
-    // Constructor: Called once on contract deployment
-    // Check packages/hardhat/deploy/00_deploy_your_contract.ts
-    constructor(address _owner) {
-        owner = _owner;
+    constructor() 
+        ERC1155("https://api.cryptomon.com/metadata/{id}.json") 
+        Ownable(msg.sender) 
+    {
+        developerWallet = payable(msg.sender); // Otomatis set ke wallet kamu
     }
 
-    // Modifier: used to define a set of rules that must be met before or after a function is executed
-    // Check the withdraw() function
-    modifier isOwner() {
-        // msg.sender: predefined variable that represents address of the account that called the current function
-        require(msg.sender == owner, "Not the Owner");
-        _;
-    }
+    // Fungsi Utama: User membeli dan membuka Booster Pack
+    function buyAndOpenPack(uint256 _amountOfPacks) public payable {
+        uint256 totalCost = packPrice * _amountOfPacks;
+        require(msg.value >= totalCost, "Dana kurang, Bro!");
 
-    /**
-     * Function that allows anyone to change the state variable "greeting" of the contract and increase the counters
-     *
-     * @param _newGreeting (string memory) - new greeting to save on the contract
-     */
-    function setGreeting(string memory _newGreeting) public payable {
-        // Print data to the hardhat chain console. Remove when deploying to a live network.
-        console.log("Setting new greeting '%s' from %s", _newGreeting, msg.sender);
+        // Cuan masuk otomatis ke dompetmu
+        developerWallet.transfer(msg.value);
 
-        // Change state variables
-        greeting = _newGreeting;
-        totalCounter += 1;
-        userGreetingCounter[msg.sender] += 1;
-
-        // msg.value: built-in global variable that represents the amount of ether sent with the transaction
-        if (msg.value > 0) {
-            premium = true;
-        } else {
-            premium = false;
+        // Dapat isi 3 kartu per pack secara acak
+        for (uint256 i = 0; i < _amountOfPacks; i++) {
+            for (uint256 j = 0; j < 3; j++) {
+                uint256 cardId = _getRandomCardId(i + j);
+                _mint(msg.sender, cardId, 1, "");
+            }
         }
-
-        // emit: keyword used to trigger an event
-        emit GreetingChange(msg.sender, _newGreeting, msg.value > 0, msg.value);
     }
 
-    /**
-     * Function that allows the owner to withdraw all the Ether in the contract
-     * The function can only be called by the owner of the contract as defined by the isOwner modifier
-     */
-    function withdraw() public isOwner {
-        (bool success, ) = owner.call{ value: address(this).balance }("");
-        require(success, "Failed to send Ether");
+    // Sistem pengacak kelangkaan kartu (Rarity)
+    function _getRandomCardId(uint256 _salt) internal view returns (uint256) {
+        uint256 randomNum = uint256(keccak256(abi.encodePacked(block.timestamp, msg.sender, _salt))) % 100;
+
+        if (randomNum < 70) {
+            return (randomNum % 3) + 1; // 70% Common (ID: 1-3)
+        } else if (randomNum < 95) {
+            return (randomNum % 2) + 4; // 25% Rare (ID: 4-5)
+        } else {
+            return 6; // 5% Legendary (ID: 6)
+        }
     }
 
-    /**
-     * Function that allows the contract to receive ETH
-     */
-    receive() external payable {}
+    function setPackPrice(uint256 _newPrice) public onlyOwner {
+        packPrice = _newPrice;
+    }
+
+    function setDeveloperWallet(address payable _newWallet) public onlyOwner {
+        developerWallet = _newWallet;
+    }
 }
