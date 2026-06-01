@@ -97,8 +97,7 @@ const Home: NextPage = () => {
           Chance to get a <span className="text-purple-400 font-bold">Legendary card is only 5%</span>.
         </p>
 
-        {/* Main Booster Pack UI */}
-        <div className="bg-slate-800 border-2 border-yellow-500 rounded-3xl p-8 shadow-2xl flex flex-col items-center max-w-sm mx-auto mb-10">
+        
           {/* Main Booster Pack UI */}
 <div className="bg-slate-800 border-2 border-yellow-500 rounded-3xl p-8 shadow-2xl flex flex-col items-center max-w-sm mx-auto mb-10">
   
@@ -108,7 +107,7 @@ const Home: NextPage = () => {
     <img 
       src="https://images.pokemontcg.io/base1/4_hires.png 
       alt="Charizard 1st Edition" 
-      className="relative w-48 h-68 object-cover rounded-2xl shadow-2xl border-4 border-yellow-400"
+      className="relative w-48 h-64 object-cover rounded-2xl shadow-2xl border-4 border-yellow-400"
     />
   </div>
   
