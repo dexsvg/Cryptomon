@@ -16,7 +16,7 @@ const Home: NextPage = () => {
       <div className="flex items-center flex-col grow pt-10">
         <div className="px-5">
           <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
+            <span className="block text-2xl mb-2">Welcome to Cryptomon</span>
             <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
           </h1>
           <div className="flex justify-center items-center space-x-2 flex-col">
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
             <Address address={connectedAddress} chain={targetNetwork} />
           </div>
           <p className="text-center text-lg">
-            Get started by editing{" "}
+            Buka booster pack digitalmu{" "}
             <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
               packages/nextjs/app/page.tsx
             </code>
