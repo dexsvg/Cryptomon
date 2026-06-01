@@ -99,8 +99,19 @@ const Home: NextPage = () => {
 
         {/* Main Booster Pack UI */}
         <div className="bg-slate-800 border-2 border-yellow-500 rounded-3xl p-8 shadow-2xl flex flex-col items-center max-w-sm mx-auto mb-10">
-          <div className="w-48 h-56 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg mb-6 font-black text-3xl text-slate-900 tracking-wider">
-            BOOSTER
+          {/* Main Booster Pack UI */}
+<div className="bg-slate-800 border-2 border-yellow-500 rounded-3xl p-8 shadow-2xl flex flex-col items-center max-w-sm mx-auto mb-10">
+  
+  {/* Efek Glow & Gambar Kartu Charizard Mewah */}
+  <div className="relative group mb-6 cursor-pointer flex justify-center">
+    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-500 to-purple-600 rounded-2xl blur opacity-75 animate-pulse"></div>
+    <img 
+      src="https://images.pokemontcg.io/base1/4_hires.png 
+      alt="Charizard 1st Edition" 
+      className="relative w-48 h-68 object-cover rounded-2xl shadow-2xl border-4 border-yellow-400"
+    />
+  </div>
+  
           </div>
 
           <p className="text-amber-400 font-bold text-xl mb-6">Price: 0.0005 ETH</p>
